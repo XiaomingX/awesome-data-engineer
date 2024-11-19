@@ -1,157 +1,183 @@
-# 📅 Data Modeling
+# 📅 数据建模指南
 
-This repository contains the setup for the data modeling modules in Weeks 1 and 2.
- 
-:wrench: **Tech Stack**
+本项目包含第一周和第二周的数据建模模块设置。
 
-- Git
-- Postgres
-- PSQL CLI
-- Database management environment (DataGrip, DBeaver, VS Code with extensions, etc.)
-- Docker, Docker Compose, and Docker Desktop
+### 🔧 **技术栈**
 
-:pencil: **TL;DR**
+- Git  
+- Postgres  
+- PSQL CLI  
+- 数据库管理工具（如 DataGrip、DBeaver、VS Code 扩展等）  
+- Docker、Docker Compose、Docker Desktop  
 
-1. [Clone the repository](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md).
-2. [Start Postgres instance](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md#2%EF%B8%8F%E2%83%A3run-postgres).
-3. [Connect to Postgres](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md#threeconnect-to-postgres-in-database-client) using your preferred database management tool.
+---
 
-For detailed instructions and more information, please refer to the step-by-step instructions below.
+## ✏️ **快速开始（TL;DR）**
 
-## 1️⃣ **Clone the repository**
+1. [克隆项目仓库](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md)。  
+2. [启动 Postgres 实例](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md#2%EF%B8%8F%E2%83%A3run-postgres)。  
+3. 使用您喜欢的数据库管理工具[连接到 Postgres](https://github.com/DataExpert-io/data-engineer-handbook/edit/main/bootcamp/materials/1-dimensional-data-modeling/README.md#threeconnect-to-postgres-in-database-client)。  
 
-- Clone the repo using the SSH link. This will create a new folder in the current directory on your local machine.
-    
+如需详细操作说明，请参考下方逐步指南。
+
+---
+
+## 1️⃣ **克隆仓库**
+
+- 使用 SSH 链接克隆项目，这将在本地创建一个新文件夹：
+
     ```bash
     git clone git@github.com:DataExpert-io/data-engineer-handbook.git
     ```
-    
-    > ℹ️ To securely interact with GitHub repositories, it is recommended to use SSH keys. Follow the instructions provided **[here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)** to set up SSH keys on GitHub.
-    > 
 
-- Navigate into the cloned repo using the command line:
-    
+    > 💡 **提示**：建议使用 SSH 密钥与 GitHub 交互以增强安全性，设置方法详见 [官方文档](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)。  
+
+- 进入克隆的项目目录：  
+
     ```bash
     cd data-engineer-handbook/bootcamp/materials/1-dimensional-data-modeling
     ```
 
-## 2️⃣ **Run Postgres**
+---
 
-There are two methods to get Postgres running locally.
+## 2️⃣ **启动 Postgres**
 
-### 💻 **Option 1: Run on local machine**
+您可以通过以下两种方法在本地运行 Postgres。
 
-1. Install Postgres
-    - For Mac: Follow this **[tutorial](https://daily-dev-tips.com/posts/installing-postgresql-on-a-mac-with-homebrew/)** (Homebrew is really nice for installing on Mac)
-    - For Windows: Follow this **[tutorial](https://www.sqlshack.com/how-to-install-postgresql-on-windows/)**
-2. Run this command after replacing **`<computer-username>`** with your computer's username:
-    
+### 💻 方法 1：在本地直接运行
+
+1. **安装 Postgres**：  
+    - Mac 用户可参考 [教程](https://daily-dev-tips.com/posts/installing-postgresql-on-a-mac-with-homebrew/) 使用 Homebrew 安装  
+    - Windows 用户可参考 [教程](https://www.sqlshack.com/how-to-install-postgresql-on-windows/)
+
+2. 替换命令中的 **`<用户名>`** 后运行以下命令加载数据：  
+
     ```bash
-    psql -U <computer-username> postgres < data.dump
+    psql -U <用户名> postgres < data.dump
     ```
-    
-3. Set up DataGrip, DBeaver, or your VS Code extension to point at your locally running Postgres instance.
-4. Have fun querying!
 
-### 🐳 **Option 2: Run Postgres in Docker**
+3. 配置 DataGrip、DBeaver 或 VS Code 扩展连接本地 Postgres 实例。  
+4. 现在可以开始运行查询了！
 
-- Install Docker Desktop from **[here](https://www.docker.com/products/docker-desktop/)**.
-- Copy **`example.env`** to **`.env`**:
-    
+### 🐳 方法 2：通过 Docker 启动
+
+1. **安装 Docker Desktop**：[下载地址](https://www.docker.com/products/docker-desktop)  
+2. 将 **`example.env`** 复制为 **`.env`**：  
+
     ```bash
     cp example.env .env
     ```
 
-- Start the Docker Compose container:
-    - If you're on Mac:
-        
+3. 启动 Docker Compose 容器：  
+    - Mac 用户运行：  
+
         ```bash
         make up
         ```
-        
-    - If you're on Windows:
-        
+
+    - Windows 用户运行：  
+
         ```bash
         docker compose up -d
         ```
-        
-- A folder named **`postgres-data`** will be created in the root of the repo. The data backing your Postgres instance will be saved here.
-- You can check that your Docker Compose stack is running by either:
-    - Going into Docker Desktop: you should see an entry there with a drop-down for each of the containers running in your Docker Compose stack.
-    - Running **`docker ps -a`** and looking for the containers with the name **`postgres`**.
-- When you're finished with your Postgres instance, you can stop the Docker Compose containers with:
-    
-    ```bash
-    make down
-    ```
-    
-    Or if you're on Windows:
-    
-    ```bash
-    docker compose down -v
-    ```
 
-### :rotating_light: **Need help loading tables?** :rotating_light:
+4. 项目根目录将生成一个 **`postgres-data`** 文件夹，用于保存 Postgres 实例的数据。  
 
-> Refer to the instructions below to resolve the issue when the data dump fails to load tables, displaying the message `PostgreSQL Database directory appears to contain a database; Skipping initialization.`
-> 
+5. 检查容器是否运行：  
+    - 打开 Docker Desktop 界面，确认 `postgres` 容器正在运行。  
+    - 或运行以下命令查看容器状态：  
 
-## :three: **Connect to Postgres in Database Client**
+        ```bash
+        docker ps -a
+        ```
 
-- Some options for interacting with your Postgres instance:
-    - DataGrip - JetBrains; 30-day free trial or paid version.
-    - VSCode built-in extension (there are a few of these).
-    - PGAdmin.
-    - Postbird.
-- Using your client of choice, follow the instructions to establish a new PostgreSQL connection.
-    - The default username is **`postgres`** and corresponds to **`$POSTGRES_USER`** in your **`.env`**.
-    - The default password is **`postgres`** and corresponds to **`$POSTGRES_PASSWORD`** in your **`.env`**.
-    - The default database is **`postgres`** and corresponds to **`$POSTGRES_DB`** in your **`.env`**.
-    - The default host is **`localhost`** or **`0.0.0.0`.** This is the IP address of the Docker container running the PostgreSQL instance.
-    - The default port for Postgres is **`5432` .** This corresponds to the **`$CONTAINER_PORT`** variable in the **`.env`** file.
-    
-    &rarr; :bulb: You can edit these values by modifying the corresponding values in **`.env`**.
-    
-- If the test connection is successful, click "Finish" or "Save" to save the connection. You should now be able to use the database client to manage your PostgreSQL database locally.
+6. 停止 Postgres 容器：  
+    - Mac 用户运行：  
 
-## **🚨 Tables not loading!? 🚨**
-- If you are on Windows and used **`docker compose up`**, table creation and data load will not take place with container creation. Once you have docker container up and verified that you are able to connect to empty postgres database with your own choice of client, follow the following steps:
-1. On Docker desktop, connect to my-postgres-container terminal.
-2. Run:
+        ```bash
+        make down
+        ```
+
+    - Windows 用户运行：  
+
+        ```bash
+        docker compose down -v
+        ```
+
+---
+
+## 3️⃣ **通过数据库管理工具连接 Postgres**
+
+- 常用工具包括：  
+    - **DataGrip**（JetBrains 出品，有 30 天免费试用）  
+    - **VS Code** 扩展  
+    - **PGAdmin**  
+    - **Postbird**  
+
+- 默认连接配置如下（可以通过 **`.env`** 文件修改）：  
+    - 用户名：**`postgres`**  
+    - 密码：**`postgres`**  
+    - 数据库：**`postgres`**  
+    - 主机：**`localhost`** 或 **`0.0.0.0`**  
+    - 端口：**`5432`**
+
+- 成功测试连接后，保存配置即可管理本地 Postgres 数据库。
+
+---
+
+## 🚨 **数据表加载失败怎么办？**
+
+- 如果使用 Docker 启动 Postgres 时数据未正常加载，参考以下解决方案：  
+
+1. 使用 Docker Desktop 打开容器终端，运行以下命令手动加载数据：  
+
     ```bash
     psql \
         -v ON_ERROR_STOP=1 \
         --username $POSTGRES_USER \
         --dbname $POSTGRES_DB \
-        < /docker-entrypoint-initdb.d/data.dump>
+        < /docker-entrypoint-initdb.d/data.dump
     ```
-    - → This will run the file `data.dump` from inside your docker container.
 
-- If the tables don't come with the loaded data, follow these steps with manual installation of postgres:
+2. 或者，直接在命令行加载数据：  
+    - 找到 `psql` 客户端的安装位置（如 `C:\\Program Files\\PostgreSQL\\13\\runpsql.bat`）  
+    - 使用以下命令加载数据：  
 
-1. Find where your `psql` client is installed (Something like `C:\\Program Files\\PostgreSQL\\13\\runpsql.bat`)
-2. Make sure you're in the root of the repo, and launch `psql` by running that `.bat` script
-3. Enter your credentials for postgres (described in the connect to postgres section)
-    - → If the above worked, you should now be inside a psql REPL (It looks like `postgres=#`)
-4. Run:
-    
+        ```bash
+        postgres=# \i data.dump
+        ```
+
+3. 如果仍有问题，可检查容器内数据文件并使用以下命令还原：  
+
     ```bash
-    postgres=# \\i data.dump
+    docker exec -it <容器ID或名称> bash
+    pg_restore -U $POSTGRES_USER -d $POSTGRES_DB /docker-entrypoint-initdb.d/data.dump
     ```
-    
-    - → This will run the file `data.dump` from inside your psql REPL.
-
-- If you did the setup using Option 2, and the tables are not in the database, another solution is to: 
-
-1. Find the container id by running `docker ps` - under CONTAINER ID
-2. Go inside the container by executing `docker exec -it <container_name_or_id> bash`
-3. Run `pg_restore -U $POSTGRES_USER -d $POSTGRES_DB /docker-entrypoint-initdb.d/data.dump` 
 
 ---
 
-#### 💡 Additional Docker Make commands
+### 💡 **其他 Docker 管理命令**
 
-- To restart the Postgres instance, you can run **`make restart`**.
-- To see logs from the Postgres container, run **`make logs`**.
-- To inspect the Postgres container, run **`make inspect`**.
-- To find the port Postgres is running on, run **`make ip`**.
+- 重启 Postgres 容器：  
+
+    ```bash
+    make restart
+    ```
+
+- 查看容器日志：  
+
+    ```bash
+    make logs
+    ```
+
+- 检查容器信息：  
+
+    ```bash
+    make inspect
+    ```
+
+- 查看 Postgres 运行端口：  
+
+    ```bash
+    make ip
+    ```
